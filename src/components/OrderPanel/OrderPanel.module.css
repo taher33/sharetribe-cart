@@ -65,6 +65,10 @@
   }
 }
 
+.btnDiv {
+  margin-top: 1rem;
+}
+
 .perUnit {
   /* Font */
   composes: h4 from global;

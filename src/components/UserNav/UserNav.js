@@ -28,6 +28,13 @@ const UserNav = props => {
       },
     },
     {
+      text: <FormattedMessage id="UserNav.cart" />,
+      selected: currentPage === 'CartPage',
+      linkProps: {
+        name: 'CartPage',
+      },
+    },
+    {
       text: <FormattedMessage id="UserNav.accountSettings" />,
       selected: ACCOUNT_SETTINGS_PAGES.includes(currentPage),
       disabled: false,

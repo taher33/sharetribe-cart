@@ -44,9 +44,11 @@ import {
   resolveLatestProcessName,
 } from '../../transactions/transaction';
 
-import { ModalInMobile, PrimaryButton, AvatarSmall, H1, H2 } from '../../components';
+import { ModalInMobile, PrimaryButton, AvatarSmall, H1, H2, Button } from '../../components';
 
 import css from './OrderPanel.module.css';
+import { toggleCart } from '../../containers/cartPage/cartPage.duck';
+import { connect } from 'react-redux';
 
 const BookingTimeForm = loadable(() =>
   import(/* webpackChunkName: "BookingTimeForm" */ './BookingTimeForm/BookingTimeForm')
@@ -365,7 +367,12 @@ const OrderPanel = props => {
             payoutDetailsWarning={payoutDetailsWarning}
           />
         ) : showInquiryForm ? (
-          <InquiryWithoutPaymentForm formId="OrderPanelInquiryForm" onSubmit={onSubmit} />
+          <>
+            <InquiryWithoutPaymentForm formId="OrderPanelInquiryForm" onSubmit={onSubmit} />
+            <Button onClick={() => props.toggleCart(listing.id.uuid, author.id.uuid)}>
+              add to cart
+            </Button>
+          </>
         ) : !isKnownProcess ? (
           <p className={css.errorSidebar}>
             <FormattedMessage id="OrderPanel.unknownTransactionProcess" />
@@ -476,7 +483,21 @@ OrderPanel.propTypes = {
   intl: intlShape.isRequired,
 };
 
+const mapStateToProps = () => {
+  return {};
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    toggleCart: (listingID, authID) => dispatch(toggleCart(listingID, authID)),
+  };
+};
+
 export default compose(
   withRouter,
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
   injectIntl
 )(OrderPanel);

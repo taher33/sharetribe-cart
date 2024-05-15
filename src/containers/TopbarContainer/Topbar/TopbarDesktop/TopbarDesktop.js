@@ -41,6 +41,18 @@ const LoginLink = () => {
   );
 };
 
+const CartLink = ({ notificationCount }) => {
+  const notificationDot = notificationCount > 0 ? <div className={css.notificationDot} /> : null;
+  return (
+    <NamedLink className={css.topbarLink} name="CartPage">
+      <span className={css.topbarLinkLabel}>
+        <FormattedMessage id="TopbarDesktop.cart" />
+        {notificationDot}
+      </span>
+    </NamedLink>
+  );
+};
+
 const InboxLink = ({ notificationCount, currentUserHasListings }) => {
   const notificationDot = notificationCount > 0 ? <div className={css.notificationDot} /> : null;
   return (
@@ -88,6 +100,15 @@ const ProfileMenu = ({ currentPage, currentUser, onLogout }) => {
             <FormattedMessage id="TopbarDesktop.profileSettingsLink" />
           </NamedLink>
         </MenuItem>
+        <MenuItem key="CartPage">
+          <NamedLink
+            className={classNames(css.menuLink, currentPageClass('CartPage'))}
+            name="CartPage"
+          >
+            <span className={css.menuItemBorder} />
+            <FormattedMessage id="TopbarDesktop.yourCartLink" />
+          </NamedLink>
+        </MenuItem>
         <MenuItem key="AccountSettingsPage">
           <NamedLink
             className={classNames(css.menuLink, currentPageClass('AccountSettingsPage'))}
@@ -129,6 +150,10 @@ const TopbarDesktop = props => {
   useEffect(() => {
     setMounted(true);
   }, []);
+  const { cart } = currentUser?.attributes.profile.privateData || {};
+  const cartCount = (cart && Object.keys(cart).length) || 0;
+
+  const cartLinkMaybe = <CartLink notificationCount={cartCount} />;
 
   const marketplaceName = config.marketplaceName;
   const authenticatedOnClientSide = mounted && isAuthenticated;
@@ -175,6 +200,7 @@ const TopbarDesktop = props => {
       />
 
       {inboxLinkMaybe}
+      {cartLinkMaybe}
       {profileMenuMaybe}
       {signupLinkMaybe}
       {loginLinkMaybe}

@@ -35,6 +35,7 @@ const SearchPageWithGrid = loadable(() => import(/* webpackChunkName: "SearchPag
 const StripePayoutPage = loadable(() => import(/* webpackChunkName: "StripePayoutPage" */ '../containers/StripePayoutPage/StripePayoutPage'));
 const TermsOfServicePage = loadable(() => import(/* webpackChunkName: "TermsOfServicePage" */ '../containers/TermsOfServicePage/TermsOfServicePage'));
 const TransactionPage = loadable(() => import(/* webpackChunkName: "TransactionPage" */ '../containers/TransactionPage/TransactionPage'));
+const CartPage = loadable(() => import(/* webpackChunkName: "CartPage" */ '../containers/cartPage/cartPage'));
 
 // Styleguide helps you to review current components and develop new ones
 const StyleguidePage = loadable(() => import(/* webpackChunkName: "StyleguidePage" */ '../containers/StyleguidePage/StyleguidePage'));
@@ -334,6 +335,14 @@ const routeConfiguration = (layoutConfig) => {
       name: 'StyleguideComponentExampleRaw',
       component: StyleguidePage,
       extraProps: { raw: true },
+    },
+    {
+      path: '/cart',
+      name: 'CartPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: CartPage,
+      loadData: pageDataLoadingAPI.CartPage.loadData,
     },
     {
       path: '/notfound',
