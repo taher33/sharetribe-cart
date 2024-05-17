@@ -13,6 +13,7 @@ import loadable from '@loadable/component';
 
 // Icons
 export { default as IconAdd } from './IconAdd/IconAdd';
+export { default as MinusIcon } from './MinusIcon/MinusIcon';
 export { default as IconArrowHead } from './IconArrowHead/IconArrowHead';
 export { default as IconBannedUser } from './IconBannedUser/IconBannedUser';
 export { default as IconCheckmark } from './IconCheckmark/IconCheckmark';

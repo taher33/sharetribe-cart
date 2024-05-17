@@ -11,7 +11,7 @@ import { createSlug } from '../../util/urlHelpers';
 import { PURCHASE_PROCESS_NAME } from '../../transactions/transaction.js';
 import { FormattedMessage } from '../../util/reactIntl';
 
-import { Button, LayoutSingleColumn, Page, UserNav } from '../../components';
+import { Button, LayoutSingleColumn, OrderBreakdown, Page, UserNav } from '../../components';
 
 import EstimatedCustomerBreakdownMaybe from '../../components/OrderPanel/EstimatedCustomerBreakdownMaybe';
 
@@ -64,7 +64,7 @@ const CartPage = props => {
         }
         footer={<FooterContainer />}
       >
-        {/* <h1 className={css.title}>{pageTitle}</h1> */}
+        <h1 className={css.title}>Cart</h1>
 
         <div className={css.splitView}>
           <div className={css.listingPanel}>
@@ -91,9 +91,12 @@ const CartPage = props => {
         </div>
         {cartListings?.length > 0 && (
           <Button className={css.buyNowButton}>
-            <FormattedMessage id="CartPage.buyNowButton" />
+            <FormattedMessage id="buy Now" />
           </Button>
         )}
+      </LayoutSingleColumn>
+      <LayoutSingleColumn>
+        <OrderBreakdown />
       </LayoutSingleColumn>
     </Page>
   );

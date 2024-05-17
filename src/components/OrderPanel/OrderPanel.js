@@ -369,7 +369,11 @@ const OrderPanel = props => {
         ) : showInquiryForm ? (
           <>
             <InquiryWithoutPaymentForm formId="OrderPanelInquiryForm" onSubmit={onSubmit} />
-            <Button onClick={() => props.toggleCart(listing.id.uuid, author.id.uuid)}>
+            <div className={css.btnDiv}></div>
+            <Button
+              className={css.addToCartBtn}
+              onClick={() => props.toggleCart(listing.id.uuid, author.id.uuid)}
+            >
               add to cart
             </Button>
           </>

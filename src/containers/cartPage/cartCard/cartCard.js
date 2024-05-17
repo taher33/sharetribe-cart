@@ -1,5 +1,5 @@
 import React from 'react';
-import { NamedLink, ResponsiveImage } from '../../../components';
+import { Button, IconAdd, MinusIcon, NamedLink, ResponsiveImage } from '../../../components';
 import { createSlug } from '../../../util/urlHelpers';
 
 import css from './cartCard.module.css';
@@ -10,14 +10,13 @@ const CartCard = props => {
   const listingId = listing.id;
   const authorId = listing.authorId;
 
-  const variantPrefix = 'cart-card';
+  const variantPrefix = ['default'];
 
   const handleToggleCart = increment => {
     onToggleCart(listingId, authorId, increment);
   };
 
   const linkParams = { id: listingId, slug: createSlug(title) };
-  const firstImage = listing.images && listing.images.length > 0 ? listing.images[0] : null;
 
   const total = `${(price * (count ?? 1)) / 100} USD`;
 
@@ -30,11 +29,26 @@ const CartCard = props => {
         <ResponsiveImage
           rootClassName={css.rootForImage}
           alt={title}
-          image={[listing.image]}
+          image={listing.image}
           variants={variantPrefix}
         />
-        {/* <AddToCartButton listing={listing} count={count} incrementCart={handleToggleCart} /> */}
-        <span>{total}</span>
+        <div className={css.countContainer}>
+          <Button onClick={() => handleToggleCart(1)} className={css.actionButton}>
+            <IconAdd rootClassName={css.btnIcons} />
+          </Button>
+          {/* <input
+            type="number"
+            value={count}
+            onChange={evt => {
+              console.log(evt.target.value);
+            }}
+          /> */}
+          {count}
+          <Button onClick={() => handleToggleCart(-1)} className={css.actionButton}>
+            <MinusIcon rootClassName={css.btnIcons} />
+          </Button>
+        </div>
+        <span>total {total}</span>
       </div>
     </div>
   );

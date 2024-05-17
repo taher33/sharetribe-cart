@@ -1,3 +1,4 @@
+import { count } from 'rxjs';
 import { currentUserShowSuccess } from '../../ducks/user.duck';
 import { denormalisedResponseEntities } from '../../util/data';
 import { parse } from '../../util/urlHelpers';
@@ -6,11 +7,15 @@ export const FETCH_LINE_ITEMS_REQUEST = 'app/CartPage/FETCH_LINE_ITEMS_REQUEST';
 export const FETCH_LINE_ITEMS_SUCCESS = 'app/CartPage/FETCH_LINE_ITEMS_SUCCESS';
 export const FETCH_LINE_ITEMS_ERROR = 'app/CartPage/FETCH_LINE_ITEMS_ERROR';
 export const SET_AUTHOR_ID = 'app/CartPage/SET_AUTHOR_ID';
+export const UPDATE_CART_LISTINGS = 'app/CartPage/UPDATE_CART_LISTINGS';
 
 export const fetchCartItemsReq = () => ({ type: FETCH_LINE_ITEMS_REQUEST });
 export const fetchCartItemsErr = e => ({ type: FETCH_LINE_ITEMS_ERROR, payload: e });
 export const fetchCartItemsSuccess = res => ({ type: FETCH_LINE_ITEMS_SUCCESS, payload: res });
 export const setAuthorIdx = id => ({ type: SET_AUTHOR_ID, payload: id });
+export const updateCartListings = cart => {
+  return { type: UPDATE_CART_LISTINGS, payload: cart };
+};
 
 const updateCurrentUserCart = newCart => (dispatch, getState, sdk) => {
   return sdk.currentUser
@@ -43,6 +48,8 @@ export const toggleCart = (listingId, authorId, increment = 1) => (dispatch, get
 
   // Cart as object with author ids as keys
   let newCart = getNewCart(cart, authorId, listingId, increment);
+
+  dispatch(updateCartListings(newCart));
 
   dispatch(updateCurrentUserCart(newCart))
     .then(updatedCart => {
@@ -80,8 +87,7 @@ export const loadData = (params, search, authorId = null, currentUser = null) =>
   return sdk.listings
     .query(params)
     .then(response => {
-      console.log(response.data);
-      const cart = [];
+      const listings = [];
       response.data.data.forEach(el => {
         const cartItem = {
           authorId: el.relationships.author.data.id.uuid,
@@ -91,15 +97,13 @@ export const loadData = (params, search, authorId = null, currentUser = null) =>
           title: el.attributes.title,
           image: response.data.included.find(
             details => details.id.uuid === el.relationships.images.data[0].id.uuid
-          ).attributes?.variants.default.url,
-          // count: cart[el.relationships.author.data.id.uuid][el.id.uuid]?.count,
+          ),
+          count: cart[el.relationships.author.data.id.uuid]?.[el.id.uuid]?.count,
         };
-        cart.push(cartItem);
+        listings.push(cartItem);
       });
 
-      dispatch(fetchCartItemsSuccess(cart));
-
-      console.log({ cart });
+      dispatch(fetchCartItemsSuccess(listings));
 
       return response;
     })
@@ -126,8 +130,17 @@ const CartPageReducer = (state = initialState, action = {}) => {
       return { ...state, isFetchInProgress: false, cartListings: payload };
     case FETCH_LINE_ITEMS_ERROR:
       return { ...state, isFetchInProgress: false, fetchErr: payload };
-    // case SET_AUTHOR_ID:
-    //   return { ...state, authorId: payload };
+    case UPDATE_CART_LISTINGS:
+      const newCartListings = state.cartListings
+        .map(el => {
+          const cartItem = payload[el.authorId]?.[el.id];
+          if (cartItem === undefined) {
+            return { ...el, count: 0 };
+          }
+          return { ...el, count: cartItem.count };
+        })
+        .filter(el => el.count !== 0);
+      return { ...state, cartListings: newCartListings };
 
     default:
       return state;

@@ -69,24 +69,24 @@ const ResponsiveImage = props => {
     );
   }
 
-  // const imageVariants = image.attributes.variants;
+  const imageVariants = image.attributes.variants;
 
-  // const srcSet = variants
-  //   .map(variantName => {
-  //     const variant = imageVariants[variantName];
+  const srcSet = variants
+    .map(variantName => {
+      const variant = imageVariants[variantName];
 
-  //     if (!variant) {
-  //       // Variant not available (most like just not loaded yet)
-  //       return null;
-  //     }
-  //     return `${variant.url} ${variant.width}w`;
-  //   })
-  //   .filter(v => v != null)
-  //   .join(', ');
+      if (!variant) {
+        // Variant not available (most like just not loaded yet)
+        return null;
+      }
+      return `${variant.url} ${variant.width}w`;
+    })
+    .filter(v => v != null)
+    .join(', ');
 
   const imgProps = {
     className: classes,
-    src: image,
+    srcSet,
     ...rest,
   };
 
